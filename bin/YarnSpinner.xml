@@ -1,0 +1,1419 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YarnSpinner</name>
+    </assembly>
+    <members>
+        <member name="T:Yarn.Line">
+             <summary>
+             A line of dialogue, sent from the <see cref="T:Yarn.Dialogue"/> to the
+             game.
+             </summary>
+             <remarks>
+             When the game receives a <see cref="T:Yarn.Line"/>, it should do the
+             following things to prepare the line for presentation to the user. 
+            
+             1. Use the value in the <see cref="F:Yarn.Line.ID"/> field to look up the
+             appropriate user-facing text in the string table. 
+            
+             2. For each of the entries in the <see cref="F:Yarn.Line.Substitutions"/>
+             field, replace the corresponding placeholder with the entry. That
+             is, the text "`{0}`" should be replaced with the value of
+             `Substitutions[0]`, "`{1}`" with `Substitutions[1]`, and so on. 
+            
+             3. Use <see cref="M:Yarn.Dialogue.ExpandFormatFunctions(System.String,System.String)"/>
+             to expand all [format functions]({{|ref
+             "/docs/syntax.md#format-functions"|}}) in the line.
+            
+             You do not create instances of this struct yourself. They are
+             created by the <see cref="T:Yarn.Dialogue"/> during program execution.
+             </remarks>
+             <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+        </member>
+        <member name="F:Yarn.Line.ID">
+            <summary>
+            The string ID for this line.
+            </summary>
+        </member>
+        <member name="F:Yarn.Line.Text">
+            <summary>
+            The text of the line.
+            </summary>
+        </member>
+        <member name="F:Yarn.Line.Substitutions">
+            <summary>
+            The values that should be inserted into the user-facing text
+            before delivery.
+            </summary>
+        </member>
+        <member name="T:Yarn.OptionSet">
+            <summary>
+            A set of <see cref="T:Yarn.OptionSet.Option"/>s, sent from the <see
+            cref="T:Yarn.Dialogue"/> to the game.
+            </summary>
+            <remarks>
+            You do not create instances of this struct yourself. They are
+            created by the <see cref="T:Yarn.Dialogue"/> during program execution.
+            </remarks>
+            <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+        </member>
+        <member name="T:Yarn.OptionSet.Option">
+            <summary>
+            An option to be presented to the user.
+            </summary>
+        </member>
+        <member name="P:Yarn.OptionSet.Option.Line">
+            <summary>
+            Gets the <see cref="P:Yarn.OptionSet.Option.Line"/> that should be presented to the
+            user for this option.
+            </summary>
+            <remarks>
+            See the documentation for the <see cref="T:Yarn.Line"/> class
+            for information on how to prepare a line before presenting
+            it to the user. 
+            </remarks>
+        </member>
+        <member name="P:Yarn.OptionSet.Option.ID">
+            <summary>
+            Gets the identifying number for this option.
+            </summary>
+            <remarks>
+            When the user selects this option, this value should be
+            used as the parameter for <see
+            cref="M:Yarn.Dialogue.SetSelectedOption(System.Int32)"/>.
+            </remarks>
+        </member>
+        <member name="P:Yarn.OptionSet.Option.DestinationNode">
+            <summary>
+            Gets the name of the node that will be run if this option
+            is selected.
+            </summary>
+            <remarks>
+            The value of this property not be valid if this is a
+            shortcut option.
+            </remarks>
+        </member>
+        <member name="P:Yarn.OptionSet.Options">
+            <summary>
+            Gets the <see cref="T:Yarn.OptionSet.Option"/>s that should be presented to the
+            user.
+            </summary>
+            <seealso cref="T:Yarn.OptionSet.Option"/>
+        </member>
+        <member name="T:Yarn.Command">
+            <summary>
+            A command, sent from the <see cref="T:Yarn.Dialogue"/> to the game.
+            </summary>
+            <remarks>
+            You do not create instances of this struct yourself. They are
+            created by the <see cref="T:Yarn.Dialogue"/> during program execution.
+            </remarks>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>    
+        </member>
+        <member name="P:Yarn.Command.Text">
+            <summary>
+            Gets the text of the command.
+            </summary>
+        </member>
+        <member name="T:Yarn.Logger">
+            <summary>
+            Represents a method that receives diagnostic messages and error
+            information from a <see cref="T:Yarn.Dialogue"/>.
+            </summary>
+            <remarks>
+            The text that this delegate receives may be output to a console, or
+            sent to a log.
+            </remarks>
+            <param name="message">The text that should be logged.</param>
+        </member>
+        <member name="T:Yarn.VariableStorage">
+            <summary>Provides a mechanism for storing and retrieving instances
+            of the <see cref="T:Yarn.Value"/> class.</summary>
+        </member>
+        <member name="M:Yarn.VariableStorage.SetValue(System.String,Yarn.Value)">
+            <summary>
+            Stores a <see cref="T:Yarn.Value"/>.
+            </summary>
+            <param name="variableName">The name to associate with this
+            variable.</param>
+            <param name="value">The value to store.</param>
+        </member>
+        <member name="M:Yarn.VariableStorage.SetValue(System.String,System.String)">
+            <summary>
+            Stores a <see cref="T:System.String"/> as a <see cref="T:Yarn.Value"/>.
+            </summary>
+            <param name="variableName">The name to associate with this
+            variable.</param>
+            <param name="stringValue">The string to store.</param>
+        </member>
+        <member name="M:Yarn.VariableStorage.SetValue(System.String,System.Single)">
+            <summary>
+            Stores a <see cref="T:System.Single"/> as a <see cref="T:Yarn.Value"/>.
+            </summary>
+            <param name="variableName">The name to associate with this
+            variable.</param>
+            <param name="floatValue">The number to store.</param>
+        </member>
+        <member name="M:Yarn.VariableStorage.SetValue(System.String,System.Boolean)">
+            <summary>
+            Stores a <see cref="T:System.Boolean"/> as a <see cref="T:Yarn.Value"/>.
+            </summary>
+            <param name="variableName">The name to associate with this
+            variable.</param>
+            <param name="boolValue">The boolean value to store.</param>
+        </member>
+        <member name="M:Yarn.VariableStorage.GetValue(System.String)">
+            <summary>
+            Retrieves a <see cref="T:Yarn.Value"/> by name.
+            </summary>
+            <param name="variableName">The name of the variable to retrieve
+            the value of.</param>
+            <returns>The <see cref="T:Yarn.Value"/>. If a variable by the name of
+            `variableName` is not present, returns a value representing
+            `null`.</returns>
+        </member>
+        <member name="M:Yarn.VariableStorage.Clear">
+            <summary>
+            Removes all variables from storage.
+            </summary>
+        </member>
+        <member name="T:Yarn.BaseVariableStorage">
+            <summary>
+            An abstract class that implements convenience methods for
+            converting values to instances of <see cref="T:Yarn.Value"/>. 
+            </summary>
+            <remarks>
+            If you subclass this, you only have to implement <see
+            cref="M:Yarn.BaseVariableStorage.SetValue(System.String,Yarn.Value)"/>, <see
+            cref="M:Yarn.BaseVariableStorage.GetValue(System.String)"/> and <see
+            cref="M:Yarn.BaseVariableStorage.Clear"/>.
+            </remarks>
+            <inheritdoc cref="T:Yarn.VariableStorage"/>
+        </member>
+        <member name="M:Yarn.BaseVariableStorage.SetValue(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.BaseVariableStorage.SetValue(System.String,System.Single)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.BaseVariableStorage.SetValue(System.String,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.BaseVariableStorage.SetValue(System.String,Yarn.Value)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.BaseVariableStorage.GetValue(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.BaseVariableStorage.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yarn.MemoryVariableStore">
+            <summary>
+            A simple concrete subclass of <see cref="T:Yarn.BaseVariableStorage"/> that
+            keeps all variables in memory.
+            </summary>
+        </member>
+        <member name="M:Yarn.MemoryVariableStore.SetValue(System.String,Yarn.Value)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.MemoryVariableStore.GetValue(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yarn.MemoryVariableStore.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yarn.Dialogue">
+            <summary>
+            Co-ordinates the execution of Yarn programs.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.variableStorage">
+            We'll ask this object for the state of variables
+        </member>
+        <member name="P:Yarn.Dialogue.LogDebugMessage">
+            <summary>
+            Invoked when the Dialogue needs to report debugging information.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.LogErrorMessage">
+            <summary>
+            Invoked when the Dialogue needs to report an error.
+            </summary>
+        </member>
+        <member name="F:Yarn.Dialogue.DEFAULT_START">
+            <summary>The node that execution will start from.</summary>
+        </member>
+        <member name="P:Yarn.Dialogue.Program">
+            <summary>Gets or sets the compiled Yarn program.</summary>
+        </member>
+        <member name="P:Yarn.Dialogue.IsActive">
+            <summary>
+            Gets a value indicating whether the Dialogue is currently executing Yarn instructions.
+            </summary>
+        </member>
+        <member name="T:Yarn.Dialogue.HandlerExecutionType">
+            <summary>
+            Used as a return type by handlers (such as the <see
+            cref="T:Yarn.Dialogue.LineHandler"/>) to indicate whether a <see
+            cref="T:Yarn.Dialogue"/> should suspend execution, or continue
+            executing, after it has called the handler.
+            </summary>
+            <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+        </member>
+        <member name="F:Yarn.Dialogue.HandlerExecutionType.PauseExecution">
+            <summary>
+            Indicates that the <see cref="T:Yarn.Dialogue"/> should suspend
+            execution.
+            </summary>
+        </member>
+        <member name="F:Yarn.Dialogue.HandlerExecutionType.ContinueExecution">
+            <summary>
+            Indicates that the <see cref="T:Yarn.Dialogue"/> should continue
+            execution.
+            </summary>
+        </member>
+        <member name="T:Yarn.Dialogue.LineHandler">
+            <summary>
+            Represents the method that is called when the Dialogue delivers
+            a <see cref="T:Yarn.Line"/>.
+            </summary>
+            <param name="line">The <see cref="T:Yarn.Line"/> that has been
+            delivered.</param>
+            <returns>Whether the <see cref="T:Yarn.Dialogue"/> should suspend
+            execution after delivering this line.</returns>
+            <seealso cref="T:Yarn.Dialogue.HandlerExecutionType"/>
+            <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeStartHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+            <seealso cref="T:Yarn.Dialogue.DialogueCompleteHandler"/>
+        </member>
+        <member name="T:Yarn.Dialogue.OptionsHandler">
+            <summary>
+            Represents the method that is called when the Dialogue delivers
+            an <see cref="T:Yarn.OptionSet"/>.
+            </summary>
+            <param name="options">The <see cref="T:Yarn.OptionSet"/> that has been
+            delivered.</param>
+            <remarks>
+            Unlike <see cref="T:Yarn.Dialogue.LineHandler"/>, <see cref="T:Yarn.Dialogue.OptionsHandler"/>
+            does not return a <see cref="T:Yarn.Dialogue.HandlerExecutionType"/> to signal
+            that the Dialogue should suspend execution. This is because the
+            Dialogue will _always_ need to wait for the user to make a
+            selection before execution can resume.
+            </remarks>
+            <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeStartHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+            <seealso cref="T:Yarn.Dialogue.DialogueCompleteHandler"/>
+        </member>
+        <member name="T:Yarn.Dialogue.CommandHandler">
+            <summary>
+            Represents the method that is called when the Dialogue delivers
+            a <see cref="T:Yarn.Command"/>.
+            </summary>
+            <param name="command">The <see cref="T:Yarn.Command"/> that has been
+            delivered.</param>
+            <returns>Whether the <see cref="T:Yarn.Dialogue"/> should suspend
+            execution after delivering this command.</returns>
+            <seealso cref="T:Yarn.Dialogue.HandlerExecutionType"/>
+            <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+            <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeStartHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+            <seealso cref="T:Yarn.Dialogue.DialogueCompleteHandler"/>
+        </member>
+        <member name="T:Yarn.Dialogue.NodeCompleteHandler">
+            <summary>
+            Represents the method that is called when the Dialogue reaches
+            the end of a node.
+            </summary>
+            <param name="completedNodeName">The name of the node.</param>
+            <returns>Whether the <see cref="T:Yarn.Dialogue"/> should suspend
+            execution after this method has been called.</returns>
+            <remarks>
+            This method may be called multiple times over the course of
+            code execution. A node being complete does not necessarily
+            represent the end of the conversation.
+            </remarks>
+            <seealso cref="T:Yarn.Dialogue.HandlerExecutionType"/>
+            <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+            <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeStartHandler"/>
+            <seealso cref="T:Yarn.Dialogue.DialogueCompleteHandler"/>
+        </member>
+        <member name="T:Yarn.Dialogue.NodeStartHandler">
+            <summary>
+            Represents the method that is called when the Dialogue begins
+            executing a node.
+            </summary>
+            <param name="startedNodeName">The name of the node.</param>
+            <returns>Whether the <see cref="T:Yarn.Dialogue"/> should suspend
+            execution after this method has been called.</returns>
+            <seealso cref="T:Yarn.Dialogue.HandlerExecutionType"/>
+            <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+            <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+            <seealso cref="T:Yarn.Dialogue.DialogueCompleteHandler"/>
+        </member>
+        <member name="T:Yarn.Dialogue.DialogueCompleteHandler">
+            <summary>
+            Represents the method that is called when the dialogue has
+            reached its end, and no more code remains to be run.
+            </summary>
+            <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+            <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+            <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeStartHandler"/>
+            <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+        </member>
+        <member name="P:Yarn.Dialogue.lineHandler">
+            <summary>
+            Gets or sets the <see cref="T:Yarn.Dialogue.LineHandler"/> that is called when
+            a line is ready to be shown to the user.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.optionsHandler">
+            <summary>
+            Gets or sets the <see cref="T:Yarn.Dialogue.OptionsHandler"/> that is called
+            when a set of options are ready to be shown to the user.
+            </summary>
+            <remarks>
+            The Options Handler delivers an <see cref="T:Yarn.OptionSet"/> to the
+            game. Before <see cref="M:Yarn.Dialogue.Continue"/> can be called to resume
+            execution, <see cref="M:Yarn.Dialogue.SetSelectedOption(System.Int32)"/> must be called to
+            indicate which <see cref="T:Yarn.OptionSet.Option"/> was selected by the user.
+            If <see cref="M:Yarn.Dialogue.SetSelectedOption(System.Int32)"/> is not called, an exception
+            is thrown.
+            </remarks>
+        </member>
+        <member name="P:Yarn.Dialogue.commandHandler">
+            <summary>
+            Gets or sets the <see cref="T:Yarn.Dialogue.CommandHandler"/> that is called
+            when a command is to be delivered to the game.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.nodeStartHandler">
+            <summary>
+            Gets or sets the <see cref="T:Yarn.Dialogue.NodeStartHandler"/> that is called
+            when a node is started.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.nodeCompleteHandler">
+            <summary>
+            Gets or sets the <see cref="T:Yarn.Dialogue.NodeCompleteHandler"/> that is called
+            when a node is complete.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.dialogueCompleteHandler">
+            <summary>
+            Gets or sets the <see cref="T:Yarn.Dialogue.DialogueCompleteHandler"/> that is called
+            when the dialogue reaches its end.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.library">
+            <summary>
+            Gets the <see cref="T:Yarn.Library"/> that this Dialogue uses to
+            locate functions.
+            </summary>
+            <remarks>
+            When the Dialogue is constructed, the Library is initialized
+            with the built-in operators like `+`, `-`, and so on.
+            </remarks>
+        </member>
+        <member name="M:Yarn.Dialogue.#ctor(Yarn.VariableStorage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Yarn.Dialogue"/> class.
+            </summary>
+            <param name="variableStorage">The <see cref="T:Yarn.VariableStorage"/>
+            that this Dialogue should use.</param>
+        </member>
+        <member name="M:Yarn.Dialogue.SetProgram(Yarn.Program)">
+            <summary>
+            Loads all nodes from the provided <see cref="T:Yarn.Program"/>.
+            </summary>
+            <remarks>
+            This method replaces any existing nodes have been loaded. If
+            you want to load nodes from an _additional_ Program, use the
+            <see cref="M:Yarn.Dialogue.AddProgram(Yarn.Program)"/> method.
+            </remarks>
+            <param name="program">The <see cref="T:Yarn.Program"/> to
+            use.</param>
+        </member>
+        <member name="M:Yarn.Dialogue.AddProgram(Yarn.Program)">
+            <summary>
+            Loads the nodes from the specified <see cref="T:Yarn.Program"/>,
+            and adds them to the nodes already loaded.
+            </summary>
+            <param name="program">The additional program to load.</param>
+            <remarks>
+            If <see cref="P:Yarn.Dialogue.Program"/> is `null`, this method has the effect
+            as calling
+            <see cref="M:Yarn.Dialogue.SetProgram(Yarn.Program)"/>.
+            </remarks>
+        </member>
+        <member name="M:Yarn.Dialogue.LoadProgram(System.String)">
+             <summary>
+             Loads a compiled <see cref="T:Yarn.Program"/> from a file.
+             </summary>
+             <param name="fileName">The path of the file to load.</param>
+             <remarks>
+             This method replaces the current value of <see cref="P:Yarn.Dialogue.Program"/>
+             with the result of loading the file.
+            
+             This method does not compile Yarn source. To compile Yarn
+             source code into a <see cref="T:Yarn.Program"/>, use the <see
+             cref="!:Yarn.Compiler"/> class.
+             </remarks>
+        </member>
+        <member name="M:Yarn.Dialogue.SetNode(System.String)">
+            <summary>
+            Prepares the <see cref="T:Yarn.Dialogue"/> that the user intends to
+            start running a node.
+            </summary>
+            <param name="startNode">The name of the node that will be run.
+            The node have been loaded by calling <see
+            cref="M:Yarn.Dialogue.SetProgram(Yarn.Program)"/> or <see
+            cref="M:Yarn.Dialogue.AddProgram(Yarn.Program)"/>.</param>
+            <remarks>
+            After this method is called, you call <see cref="M:Yarn.Dialogue.Continue"/> to
+            start executing it.
+            </remarks>
+            <throws cref="T:Yarn.DialogueException">Thrown when no node named
+            `startNode` has been loaded.</throws>
+        </member>
+        <member name="M:Yarn.Dialogue.SetSelectedOption(System.Int32)">
+             <summary>
+             Signals to the <see cref="T:Yarn.Dialogue"/> that the user has
+             selected a specified <see cref="T:Yarn.OptionSet.Option"/>.
+             </summary>
+             <remarks>
+             After the Dialogue delivers an <see cref="T:Yarn.OptionSet"/>, this
+             method must be called before <see cref="M:Yarn.Dialogue.Continue"/> is called.
+            
+             The ID number that should be passed as the parameter to this
+             method should be the <see cref="P:Yarn.OptionSet.Option.ID"/> field in
+             the <see cref="T:Yarn.OptionSet.Option"/> that represents the user's
+             selection.
+             </remarks>
+             <param name="selectedOptionID">The ID number of the Option that
+             the user selected.</param>
+             <throws cref="T:Yarn.DialogueException">Thrown when the Dialogue is
+             not expecting an option to be selected.</throws>
+             <throws cref="T:System.ArgumentOutOfRangeException">Thrown when
+             `selectedOptionID` is not a valid option ID.</throws>
+             <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+             <seealso cref="T:Yarn.OptionSet"/>
+             <seealso cref="M:Yarn.Dialogue.Continue"/>
+        </member>
+        <member name="M:Yarn.Dialogue.Continue">
+             <summary>
+             Starts, or continues, execution of the current Program.
+             </summary>
+             <remarks>
+             This method repeatedly executes instructions until one of the
+             following conditions is encountered:
+             
+             * The <see cref="P:Yarn.Dialogue.lineHandler"/>, <see cref="P:Yarn.Dialogue.commandHandler"/>,
+             or <see cref="P:Yarn.Dialogue.nodeCompleteHandler"/> return <see
+             cref="F:Yarn.Dialogue.HandlerExecutionType.PauseExecution"/>.
+             * The <see cref="P:Yarn.Dialogue.optionsHandler"/> is called. When this occurs,
+             the Dialogue is waiting for the user to specify which of the
+             options has been selected, and <see
+             cref="M:Yarn.Dialogue.SetSelectedOption(System.Int32)"/> must be called before <see
+             cref="M:Yarn.Dialogue.Continue"/> is called again.)
+             * The Program reaches its end. When this occurs, <see
+             cref="M:Yarn.Dialogue.SetNode(System.String)"/> must be called before <see
+             cref="M:Yarn.Dialogue.Continue"/> is called again.
+             * An error occurs while executing the Program.
+            
+             This method has no effect if it is called while the <see
+             cref="T:Yarn.Dialogue"/> is currently in the process of executing
+             instructions.
+             </remarks>
+             <seealso cref="T:Yarn.Dialogue.LineHandler"/>
+             <seealso cref="T:Yarn.Dialogue.OptionsHandler"/>
+             <seealso cref="T:Yarn.Dialogue.CommandHandler"/>
+             <seealso cref="T:Yarn.Dialogue.NodeCompleteHandler"/>
+             <seealso cref="T:Yarn.Dialogue.DialogueCompleteHandler"/>
+             <seealso cref="T:Yarn.Dialogue.HandlerExecutionType"/>
+        </member>
+        <member name="M:Yarn.Dialogue.Stop">
+            <summary>
+            Immediately stops the <see cref="T:Yarn.Dialogue"/>.
+            </summary>
+            <remarks>
+            The <see cref="P:Yarn.Dialogue.dialogueCompleteHandler"/> will not be called if
+            the dialogue is ended by calling <see cref="M:Yarn.Dialogue.Stop"/>.
+            </remarks>
+        </member>
+        <member name="P:Yarn.Dialogue.allNodes">
+            <summary>
+            Gets the names of the nodes in the Program.
+            </summary>
+        </member>
+        <member name="P:Yarn.Dialogue.currentNode">
+            <summary>
+            Gets the name of the node that this Dialogue is currently
+            executing.
+            </summary>
+            <remarks>If <see cref="M:Yarn.Dialogue.Continue"/> has never been called, this
+            value will be `null`.</remarks>
+        </member>
+        <member name="M:Yarn.Dialogue.GetStringIDForNode(System.String)">
+             <summary>
+             Returns the string ID that contains the original, uncompiled
+             source text for a node.
+             </summary>
+             <param name="nodeName">The name of the node.</param>
+             <returns>The string ID.</returns>
+             <remarks>
+             A node's source text will only be present in the string table
+             if its `tags` header contains `rawText`.
+            
+             Because the <see cref="T:Yarn.Dialogue"/> class is designed to be
+             unaware of the contents of the string table, this method does
+             not test to see if the string table contains an entry with the
+             line ID. You will need to test for that yourself.
+             </remarks>
+        </member>
+        <member name="M:Yarn.Dialogue.GetTagsForNode(System.String)">
+            <summary>
+            Returns the tags for the node 'nodeName'.
+            </summary>
+            <remarks>
+            The tags for a node are defined by setting the `tags`
+            [header]({{|ref "/docs/syntax.md#header"|}}) in the node's source
+            code. This header must be a space-separated list.
+            </remarks>      
+            <param name="nodeName">The name of the node.</param>
+            <returns>The node's tags, or `null` if the node is not present
+            in the Program.</returns>
+        </member>
+        <member name="M:Yarn.Dialogue.UnloadAll">
+            <summary>
+            Unloads all nodes from the Dialogue.
+            </summary>
+        </member>
+        <member name="M:Yarn.Dialogue.NodeExists(System.String)">
+            <summary>
+            Gets a value indicating whether a specified node exists in the
+            Program.
+            </summary>
+            <param name="nodeName">The name of the node.</param>
+            <returns>`true` if a node named `nodeName` exists in the Program, `false` otherwise.</returns>
+        </member>
+        <member name="M:Yarn.Dialogue.ExpandFormatFunctions(System.String,System.String)">
+            <summary>
+            Expands all [format functions]({{|ref
+            "syntax.md#format-functions"|}}) in a given string, using
+            pluralisation rules specified by the given locale. 
+            </summary>
+            <param name="input">The string to process.</param>
+            <param name="localeCode">The locale code, as an IETF BCP-47
+            language tag, to use when determining the plural categories of
+            numbers.</param>
+            <returns>The original string, with any format functions
+            replaced with their evaluated versions.</returns>
+            <throws cref="T:System.ArgumentException">Thrown when the string
+            contains a `plural` or `ordinal` format function, but the
+            specified value cannot be parsed as a number.</throws>
+        </member>
+        <member name="T:Yarn.Dialogue.StandardLibrary">
+            The standard, built-in library of functions and operators.
+        </member>
+        <member name="T:Yarn.DialogueException">
+            <summary>
+            An exception that is thrown by <see cref="T:Yarn.Dialogue"/> when there is an error in executing a <see cref="T:Yarn.Program"/>.
+            </summary>
+        </member>
+        <member name="T:Yarn.ReturningFunction">
+            <summary>
+            Represents a function that can be called from Yarn programs that
+            returns a function.
+            </summary>
+            <param name="parameters">The parameters that this function has
+            received.</param>
+            <returns>The returned value from this function.</returns>
+            <seealso cref="T:Yarn.FunctionInfo"/>
+            <seealso cref="T:Yarn.Function"/>
+            <seealso cref="T:Yarn.Library"/>
+        </member>
+        <member name="T:Yarn.Function">
+            <summary>
+            Represents a function that can be called from Yarn programs.
+            </summary>
+            <param name="parameters">The parameters that this function has
+            received.</param>
+            <seealso cref="T:Yarn.FunctionInfo"/>
+            <seealso cref="T:Yarn.ReturningFunction"/>
+            <seealso cref="T:Yarn.Library"/>
+        </member>
+        <member name="T:Yarn.FunctionInfo">
+            <summary>
+            Represents a function in a <see cref="T:Yarn.Library"/>.
+            </summary>
+            <remarks>
+            You do not create instances of this class yourself. Instead, use
+            the <see cref="T:Yarn.Library"/> class's <see
+            cref="M:Yarn.Library.RegisterFunction(System.String,System.Int32,Yarn.Function)"/> and
+            <see cref="M:Yarn.Library.RegisterFunction(System.String,System.Int32,Yarn.ReturningFunction)"/> methods to create new functions.
+            </remarks>
+            <seealso cref="T:Yarn.Function"/>
+            <seealso cref="T:Yarn.ReturningFunction"/>
+        </member>
+        <member name="P:Yarn.FunctionInfo.name">
+            <summary>
+            The name of the function, as it exists in the script.
+            </summary>
+        </member>
+        <member name="P:Yarn.FunctionInfo.paramCount">
+            <summary>
+            Gets and sets the number of parameters this function requires.
+            </summary>
+            <remarks>
+            If this is set to -1, the function will accept any number of parameters.
+            </remarks>
+        </member>
+        <member name="P:Yarn.FunctionInfo.returnsValue">
+            <summary>Gets a value indicating whether this function returns a value or not.</summary>
+        </member>
+        <member name="M:Yarn.FunctionInfo.Invoke(Yarn.Value[])">
+            <summary>
+            Invokes this function.
+            </summary>
+            <param name="parameters">The parameters to pass to the
+            function.</param>
+            <returns>The <see cref="T:Yarn.Value"/> returned by this function. If
+            <see cref="P:Yarn.FunctionInfo.returnsValue"/> is `false`, the value will be a
+            `null` value.</returns>
+        </member>
+        <member name="M:Yarn.FunctionInfo.InvokeWithArray(Yarn.Value[])">
+            <summary>
+            Invokes this function.
+            </summary>
+            <param name="parameters">The parameters to pass to the
+            function.</param>
+            <returns>The <see cref="T:Yarn.Value"/> returned by this function. If
+            <see cref="P:Yarn.FunctionInfo.returnsValue"/> is `false`, the value will be a
+            `null` value.</returns>
+        </member>
+        <member name="M:Yarn.FunctionInfo.#ctor(System.String,System.Int32,Yarn.Function)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Yarn.FunctionInfo"/> class.
+            </summary>
+            <param name="name">The name of this function.</param>
+            <param name="paramCount">The number of parameters that this function expects to receive.</param>
+            <param name="implementation">The <see cref="T:Yarn.Function"/> that should be invoked when the function is called.</param>
+        </member>
+        <member name="M:Yarn.FunctionInfo.#ctor(System.String,System.Int32,Yarn.ReturningFunction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Yarn.FunctionInfo"/> class.
+            </summary>
+            <param name="name">The name of this function.</param>
+            <param name="paramCount">The number of parameters that this function expects to receive.</param>
+            <param name="implementation">The <see cref="T:Yarn.ReturningFunction"/> that should be invoked when the function is called.</param>
+        </member>
+        <member name="T:Yarn.Library">
+            <summary>
+            A collection of functions that can be called from Yarn programs.
+            </summary>
+            <remarks>
+            You do not create instances of this class yourself. The <see
+            cref="T:Yarn.Dialogue"/> class creates one of its own, which you can
+            access via the <see cref="P:Yarn.Dialogue.library"/> property.
+            </remarks>
+            <seealso cref="T:Yarn.FunctionInfo"/>
+            <seealso cref="T:Yarn.Dialogue"/>
+        </member>
+        <member name="M:Yarn.Library.GetFunction(System.String)">
+            <summary>
+            Returns a <see cref="T:Yarn.FunctionInfo"/> with a given name.
+            </summary>
+            <param name="name">The name of the function to
+            retrieve.</param>
+            <returns>The <see cref="T:Yarn.FunctionInfo"/>.</returns>
+            <throws cref="T:System.InvalidOperationException">Thrown when a function
+            named `name` is not present in the library.</throws>
+        </member>
+        <member name="M:Yarn.Library.ImportLibrary(Yarn.Library)">
+            <summary>
+            Loads functions from another <see cref="T:Yarn.Library"/>.
+            </summary>
+            <param name="otherLibrary">The library to import functions from.</param>
+            <remarks>
+            If the other library contains a function with the same name as
+            one in this library, the function in the other library takes
+            precedence.
+            </remarks>
+        </member>
+        <member name="M:Yarn.Library.RegisterFunction(System.String,System.Int32,Yarn.ReturningFunction)">
+             <summary>
+             Registers a new function that returns a value, which can be
+             called from a Yarn program.
+             </summary>
+             <param name="name">The name of the function.</param>
+             <param name="parameterCount">The number of parameters that this
+             function expects to receive.</param>
+             <param name="implementation">The <see
+             cref="T:Yarn.ReturningFunction"/> to be invoked when the function is
+             called.</param>
+             <remarks>If `parameterCount` is -1, the function expects to
+             receive any number of parameters.
+            
+             If a function named `name` already exists in this Library, it
+             will be replaced.
+             </remarks>
+        </member>
+        <member name="M:Yarn.Library.RegisterFunction(System.String,System.Int32,Yarn.Function)">
+             <summary>
+             Registers a new function that returns a value, which can be
+             called from a Yarn program.
+             </summary>
+             <param name="name">The name of the function.</param>
+             <param name="parameterCount">The number of parameters that this
+             function expects to receive.</param>
+             <param name="implementation">The <see
+             cref="T:Yarn.Function"/> to be invoked when the function is
+             called.</param>
+             <remarks>If `parameterCount` is -1, the function expects to
+             receive any number of parameters.
+            
+             If a function named `name` already exists in this Library, it
+             will be replaced.
+             </remarks>        
+        </member>
+        <member name="M:Yarn.Library.FunctionExists(System.String)">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Yarn.Library"/> contains a function named `name`.
+            </summary>
+            <param name="name">The name of the function to look for.</param>
+            <returns>`true` if a function exists in this Library; `false` otherwise.</returns>
+        </member>
+        <member name="M:Yarn.Library.DeregisterFunction(System.String)">
+            <summary>
+            Removes a function from the Library.
+            </summary>
+            <param name="name">The name of the function to remove.</param>
+            <remarks>
+            If no function with the given name is present in the Library,
+            this method does nothing.
+            </remarks>
+        </member>
+        <member name="T:Yarn.Program">
+            <summary>
+            A compiled Yarn program.
+            </summary>
+            <summary>
+            A complete Yarn program.
+            </summary>
+        </member>
+        <member name="M:Yarn.Program.Combine(Yarn.Program[])">
+            <summary>
+            Creates a new Program by merging multiple Programs together.
+            </summary>
+            <remarks>
+            The new program will contain every node from every input
+            program.
+            </remarks>
+            <param name="programs">The Programs to combine
+            together.</param>
+            <returns>The new, combined program.</returns>
+            <throws cref="T:System.ArgumentException">Thrown when no Programs are
+            provided as parameters.</throws>
+            <throws cref="T:System.InvalidOperationException">Thrown when more than
+            one Program contains a node of the same name.</throws>
+        </member>
+        <member name="F:Yarn.Program.NameFieldNumber">
+            <summary>Field number for the "name" field.</summary>
+        </member>
+        <member name="P:Yarn.Program.Name">
+            <summary>
+            The name of the program.
+            </summary>
+        </member>
+        <member name="F:Yarn.Program.NodesFieldNumber">
+            <summary>Field number for the "nodes" field.</summary>
+        </member>
+        <member name="P:Yarn.Program.Nodes">
+            <summary>
+            The collection of nodes in this program.
+            </summary>
+        </member>
+        <member name="T:Yarn.Instruction">
+            <summary>
+            An instruction in a Yarn Program.
+            </summary>
+            <summary>
+            A single Yarn instruction.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.OpcodeFieldNumber">
+            <summary>Field number for the "opcode" field.</summary>
+        </member>
+        <member name="P:Yarn.Instruction.Opcode">
+            <summary>
+            The operation that this instruction will perform.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.OperandsFieldNumber">
+            <summary>Field number for the "operands" field.</summary>
+        </member>
+        <member name="P:Yarn.Instruction.Operands">
+            <summary>
+            The list of operands, if any, that this instruction uses.
+            </summary>
+        </member>
+        <member name="T:Yarn.Instruction.Types">
+            <summary>Container for nested types declared in the Instruction message type.</summary>
+        </member>
+        <member name="T:Yarn.Instruction.Types.OpCode">
+            <summary>
+            The type of instruction that this is.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.JumpTo">
+            <summary>
+            Jumps to a named position in the node.
+            opA = string: label name
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.Jump">
+            <summary>
+            Peeks a string from stack, and jumps to that named position in
+            the node. 
+            No operands.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.RunLine">
+            <summary>
+            Delivers a string ID to the client.
+            opA = string: string ID
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.RunCommand">
+            <summary>
+            Delivers a command to the client.
+            opA = string: command text
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.AddOption">
+            <summary>
+            Adds an entry to the option list (see ShowOptions).
+            opA = string: string ID for option to add
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.ShowOptions">
+            <summary>
+            Presents the current list of options to the client, then clears
+            the list. The most recently selected option will be on the top
+            of the stack when execution resumes.
+            No operands.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.PushString">
+            <summary>
+            Pushes a string onto the stack.
+            opA = string: the string to push to the stack.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.PushFloat">
+            <summary>
+            Pushes a floating point number onto the stack.
+            opA = float: number to push to stack
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.PushBool">
+            <summary>
+            Pushes a boolean onto the stack.
+            opA = bool: the bool to push to stack
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.PushNull">
+            <summary>
+            Pushes a null value onto the stack.
+            No operands.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.JumpIfFalse">
+            <summary>
+            Jumps to the named position in the the node, if the top of the
+            stack is not null, zero or false.
+            opA = string: label name 
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.Pop">
+            <summary>
+            Discards top of stack.
+            No operands.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.CallFunc">
+            <summary>
+            opA = string: name of the function
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.PushVariable">
+            <summary>
+            Pushes the contents of a variable onto the stack.
+            opA = name of variable 
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.StoreVariable">
+            <summary>
+            Stores the contents of the top of the stack in the named
+            variable. 
+            opA = name of variable
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.Stop">
+            <summary>
+            Stops execution of the program.
+            No operands.
+            </summary>
+        </member>
+        <member name="F:Yarn.Instruction.Types.OpCode.RunNode">
+            <summary>
+            Run the node whose name is at the top of the stack.
+            No operands.
+            </summary>
+        </member>
+        <member name="T:Yarn.Node">
+            <summary>
+            A [node]({{|ref "/docs/writing/nodes-and-content.md#nodes"|}}), contained within a <see cref="T:Yarn.Program"/>, and containing <see cref="T:Yarn.Instruction"/>s.
+            </summary>
+            <summary>
+            A collection of instructions
+            </summary>
+        </member>
+        <member name="F:Yarn.Node.NameFieldNumber">
+            <summary>Field number for the "name" field.</summary>
+        </member>
+        <member name="P:Yarn.Node.Name">
+            <summary>
+            The name of this node.
+            </summary>
+        </member>
+        <member name="F:Yarn.Node.InstructionsFieldNumber">
+            <summary>Field number for the "instructions" field.</summary>
+        </member>
+        <member name="P:Yarn.Node.Instructions">
+            <summary>
+            The list of instructions in this node.
+            </summary>
+        </member>
+        <member name="F:Yarn.Node.LabelsFieldNumber">
+            <summary>Field number for the "labels" field.</summary>
+        </member>
+        <member name="P:Yarn.Node.Labels">
+            <summary>
+            A jump table, mapping the names of labels to positions in the
+            instructions list.
+            </summary>
+        </member>
+        <member name="F:Yarn.Node.TagsFieldNumber">
+            <summary>Field number for the "tags" field.</summary>
+        </member>
+        <member name="P:Yarn.Node.Tags">
+            <summary>
+            The tags associated with this node.
+            </summary>
+        </member>
+        <member name="F:Yarn.Node.SourceTextStringIDFieldNumber">
+            <summary>Field number for the "sourceTextStringID" field.</summary>
+        </member>
+        <member name="P:Yarn.Node.SourceTextStringID">
+            <summary>
+            the entry in the program's string table that contains the original
+            text of this node; null if this is not available    
+            </summary>
+        </member>
+        <member name="T:Yarn.Value">
+            <summary>
+            A value from inside Yarn.
+            </summary>
+        </member>
+        <member name="F:Yarn.Value.NULL">
+            <summary>
+            The shared Null value.
+            </summary>
+        </member>
+        <member name="T:Yarn.Value.Type">
+            <summary>
+            The type of a <see cref="T:Yarn.Value"/>.
+            </summary>
+        </member>
+        <member name="F:Yarn.Value.Type.Number">
+            <summary>A number.</summary>
+        </member>
+        <member name="F:Yarn.Value.Type.String">
+            <summary>A string.</summary>
+        </member>
+        <member name="F:Yarn.Value.Type.Bool">
+            <summary>A boolean value.</summary>
+        </member>
+        <member name="F:Yarn.Value.Type.Variable">
+            <summary>The name of a variable; will be expanded at runtime.</summary>
+        </member>
+        <member name="F:Yarn.Value.Type.Null">
+            <summary>The null value.</summary>
+        </member>
+        <member name="P:Yarn.Value.type">
+            <summary>
+            Gets the underlying type of this value.
+            </summary>
+            <remarks>
+            Yarn values of one underlying type can always been converted to
+            other types. This property allows you to access the actual type of value
+            that this value contains.
+            </remarks>
+        </member>
+        <member name="P:Yarn.Value.AsNumber">
+             <summary>
+             Gets the numeric representation of this value.
+             </summary>
+             <remarks>
+             This method will attempt to convert the value to a number, if
+             it isn't already. The conversion is done in the following ways:
+            
+             * If the value is a string, the value attempts to parse it as a
+             number and returns that; if this fails, 0 is returned.
+            
+             * If the value is a boolean, it will return 1 if `true`, and 0 if `false`.
+            
+             * If the value is `null`, it will return `0`.
+            
+             </remarks>
+             <exception cref="T:System.InvalidOperationException">Thrown when the
+             underlying value cannot be converted to a <see
+             cref="T:System.Single"/>.</exception>
+        </member>
+        <member name="P:Yarn.Value.AsBool">
+             <summary>
+             Gets the boolean representation of this value.
+             </summary>
+             <remarks>
+             This method will attempt to convert the value to a number, if
+             it isn't already. The conversion is done in the following ways:
+            
+             * If the value is a string, it will return `true` if the string
+             is not empty.
+            
+             * If the value is a number, it will return `true` if the value
+             is non-zero, and `false` otherwise.
+            
+             * If the value is `null`, it will return `false`.
+             </remarks>
+             <exception cref="T:System.InvalidOperationException">Thrown when the
+             underlying value cannot be converted to a <see
+             cref="T:System.Boolean"/>.</exception>
+        </member>
+        <member name="P:Yarn.Value.AsString">
+            <summary>
+            Gets the string representation of this value.
+            </summary>
+            <remarks>
+            This method will attempt to convert the value to a string, if
+            it isn't already. Conversions are done using the <see
+            cref="T:System.Globalization.CultureInfo"/> class's <see
+            cref="P:System.Globalization.CultureInfo.InvariantCulture"/>.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">Thrown when the
+            underlying value cannot be converted to a <see
+            cref="T:System.String"/>.</exception>
+        </member>
+        <member name="M:Yarn.Value.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Yarn.Value"/> class.
+            The value will be `null`.
+            </summary>
+            <returns>A <see cref="T:Yarn.Value"/>, containing `null`.</returns>
+        </member>
+        <member name="M:Yarn.Value.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Yarn.Value"/> class,
+            using the specified object.
+            </summary>
+            <remarks>
+            If the `value` is another <see cref="T:Yarn.Value"/>, its contents
+            will be copied into the new instance.
+            </remarks>
+            <throws cref="T:System.ArgumentException">
+            Thrown when the `value` is not a <see cref="T:Yarn.Value"/>, string,
+            int, float, double, bool, or null.
+            </throws>
+            <param name="value">The value that this <see cref="T:Yarn.Value"/>
+            should contain.</param>
+        </member>
+        <member name="M:Yarn.Value.CompareTo(System.Object)">
+            <summary>
+            Compares this <see cref="T:Yarn.Value"/> to another object. The other object must either be another instance of <see cref="T:Yarn.Value"/>, or `null`.
+            </summary>
+            <param name="obj">The object to compare to.</param>
+            <returns>Returns the same results as <see cref="M:Yarn.Value.CompareTo(Yarn.Value)"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when `obj` is not a <see cref="T:Yarn.Value"/>.</exception>
+        </member>
+        <member name="M:Yarn.Value.CompareTo(Yarn.Value)">
+             <summary>
+             Compares this <see cref="T:Yarn.Value"/> to another <see cref="T:Yarn.Value"/>.
+             </summary>
+             <param name="other">The other  <see cref="T:Yarn.Value"/> to compare to.</param>
+             <remarks>The method of comparison depends upon the value's <see cref="P:Yarn.Value.BackingValue"/>. 
+            
+             * If this value is <see cref="F:Yarn.Value.Type.String"/>, then the String class's <see cref="M:System.String.Compare(System.String,System.String,System.StringComparison)"/> method is used.
+            
+             * If this value is <see cref="F:Yarn.Value.Type.Number"/>, then the float type's <see cref="M:System.Single.CompareTo(System.Single)"/> method is used.
+            
+             * If this value is <see cref="F:Yarn.Value.Type.Bool"/>, then the bool type's <see cref="M:System.Boolean.CompareTo(System.Boolean)"/> method is used.
+            
+             * If this value is `null`, the result will be the value 0.
+            
+             * If `other` is `null`, the result will be the value 1.
+             </remarks>
+             <returns>Returns the result of comparing this <see cref="T:Yarn.Value"/> against `other`.</returns>
+        </member>
+        <member name="M:Yarn.Value.Equals(System.Object)">
+             <summary>
+             Compares to see if this <see cref="T:Yarn.Value"/> is the same as another.
+             </summary>
+             <remarks>
+             `obj` is converted to the same type as this value, using <see cref="P:Yarn.Value.AsNumber"/>, <see cref="P:Yarn.Value.AsString"/>, and <see cref="P:Yarn.Value.AsBool"/>.
+            
+             If this value is `null`, this method returns `true` if any of the following are true:
+            
+             * `obj` is null
+            
+             * `obj.AsNumber` is 0
+            
+             * `obj.AsBool` is `false`.
+             </remarks>
+             <param name="obj">The other <see cref="T:Yarn.Value"/> to compare against.</param>
+             <returns>`true` if the objects represent the same value, `false` otherwise.</returns>
+        </member>
+        <member name="M:Yarn.Value.GetHashCode">
+            <summary>
+            Returns the hash code for this value.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:Yarn.Value.ToString">
+            <summary>
+            Converts this value to a string.
+            </summary>
+            <returns>The string representation of this value</returns>
+        </member>
+        <member name="M:Yarn.Value.op_Addition(Yarn.Value,Yarn.Value)">
+            <summary>
+            Adds two values together.
+            </summary>
+            <remarks>
+            The specific method by which two values of different types are
+            added together depends upon the type of each of the values.
+            </remarks>
+            <param name="a">The first value.</param>
+            <param name="b">The second value.</param>
+            <returns>A new <see cref="T:Yarn.Value"/>, containing the result of
+            adding the two values together.</returns>
+            <throws cref="T:System.ArgumentException">Thrown when the two values
+            cannot be added together.</throws>
+        </member>
+        <member name="M:Yarn.Value.op_Subtraction(Yarn.Value,Yarn.Value)">
+            <summary>
+            Subtracts two values from each other.
+            </summary>
+            <remarks>
+            Both values must be either a number or `null`.
+            </remarks>
+            <param name="a">The first value.</param>
+            <param name="b">The second value.</param>
+            <returns>A new <see cref="T:Yarn.Value"/>, containing the result of
+            subtracting the two values from each other.</returns>
+            <throws cref="T:System.ArgumentException">Thrown when the two values
+            cannot be subtracted from each other together.</throws>
+        </member>
+        <member name="M:Yarn.Value.op_Multiply(Yarn.Value,Yarn.Value)">
+            <summary>
+            Multiplies two values together.
+            </summary>
+            <remarks>
+            Both values must be either a number or `null`.
+            </remarks>
+            <param name="a">The first value.</param>
+            <param name="b">The second value.</param>
+            <returns>A new <see cref="T:Yarn.Value"/>, containing the result of
+            multiplying the two values together.</returns>
+            <throws cref="T:System.ArgumentException">Thrown when the two values
+            cannot be multiplied together.</throws>
+        </member>
+        <member name="M:Yarn.Value.op_Division(Yarn.Value,Yarn.Value)">
+            <summary>
+            Divides two values.
+            </summary>
+            <remarks>
+            Both values must be either a number or `null`.
+            </remarks>
+            <param name="a">The first value.</param>
+            <param name="b">The second value.</param>
+            <returns>A new <see cref="T:Yarn.Value"/>, containing the result of
+            dividing two values.</returns>
+            <throws cref="T:System.ArgumentException">Thrown when the two values
+            cannot be divided.</throws>
+        </member>
+        <member name="M:Yarn.Value.op_Modulus(Yarn.Value,Yarn.Value)">
+            <summary>
+            Calculates the remainder when dividing two values.
+            </summary>
+            <remarks>
+            Both values must be either a number or `null`.
+            </remarks>        
+            <param name="a">The first value.</param>
+            <param name="b">The second value.</param>
+            <returns>A new <see cref="T:Yarn.Value"/>, containing the remainder of
+            dividing two values .</returns>
+            <throws cref="T:System.ArgumentException">Thrown when the two values
+            cannot be divided.</throws>
+        </member>
+        <member name="M:Yarn.Value.op_UnaryNegation(Yarn.Value)">
+             <summary>
+             Computes the negative of a value.
+             </summary>
+             <remarks>
+             If the value is a number, the negative of that number is
+             returned.
+            
+             If the value is `null` or a string, the number `-0` (negative
+             zero) is returned.
+             
+             Otherwise, a number containing the floating point value `NaN` (not a number) is returned.
+             </remarks>        
+             <param name="a">The first value.</param>
+             <param name="b">The second value.</param>
+             <returns>A new <see cref="T:Yarn.Value"/>, containing the remainder of
+             dividing two values .</returns>
+             <throws cref="T:System.ArgumentException">Thrown when the two values
+             cannot be divided.</throws>
+        </member>
+        <member name="M:Yarn.Value.op_GreaterThan(Yarn.Value,Yarn.Value)">
+            <summary>
+            Compares two values, and returns `true` if the first is greater than the second.
+            </summary>
+            <param name="operand1">The first value.</param>
+            <param name="operand2">The second value.</param>
+            <returns>`true` if `operand1` is greater than `operand2`, false otherwise.</returns>
+        </member>
+        <member name="M:Yarn.Value.op_LessThan(Yarn.Value,Yarn.Value)">
+            <summary>
+            Compares two values, and returns `true` if the first is less than the second.
+            </summary>
+            <param name="operand1">The first value.</param>
+            <param name="operand2">The second value.</param>
+            <returns>`true` if `operand1` is less than `operand2`, false otherwise.</returns>
+        </member>
+        <member name="M:Yarn.Value.op_GreaterThanOrEqual(Yarn.Value,Yarn.Value)">
+            <summary>
+            Compares two values, and returns `true` if the first is greater than or equal to the second.
+            </summary>
+            <param name="operand1">The first value.</param>
+            <param name="operand2">The second value.</param>
+            <returns>`true` if `operand1` is greater than or equal to `operand2`, false otherwise.</returns>
+        </member>
+        <member name="M:Yarn.Value.op_LessThanOrEqual(Yarn.Value,Yarn.Value)">
+            <summary>
+            Compares two values, and returns `true` if the first is less than or equal to the second.
+            </summary>
+            <param name="operand1">The first value.</param>
+            <param name="operand2">The second value.</param>
+            <returns>`true` if `operand1` is less than or equal to `operand2`, false otherwise.</returns>
+        </member>
+        <member name="T:Yarn.Operand">
+            <summary>
+            A value used by an Instruction.
+            </summary>
+            <summary>
+            A value used by an Instruction.
+            </summary>
+        </member>
+        <member name="F:Yarn.Operand.StringValueFieldNumber">
+            <summary>Field number for the "string_value" field.</summary>
+        </member>
+        <member name="P:Yarn.Operand.StringValue">
+            <summary>
+            A string.
+            </summary>
+        </member>
+        <member name="F:Yarn.Operand.BoolValueFieldNumber">
+            <summary>Field number for the "bool_value" field.</summary>
+        </member>
+        <member name="P:Yarn.Operand.BoolValue">
+            <summary>
+            A boolean (true or false).
+            </summary>
+        </member>
+        <member name="F:Yarn.Operand.FloatValueFieldNumber">
+            <summary>Field number for the "float_value" field.</summary>
+        </member>
+        <member name="P:Yarn.Operand.FloatValue">
+            <summary>
+            A floating point number.
+            </summary>
+        </member>
+        <member name="T:Yarn.Operand.ValueOneofCase">
+            <summary>Enum of possible cases for the "value" oneof.</summary>
+        </member>
+        <member name="F:Yarn.VirtualMachine.State.currentNodeName">
+            The name of the node that we're currently in
+        </member>
+        <member name="F:Yarn.VirtualMachine.State.programCounter">
+            The instruction number in the current node
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:Yarn.VirtualMachine.State.currentOptions" -->
+        <member name="F:Yarn.VirtualMachine.State.stack">
+            The value stack
+        </member>
+        <member name="M:Yarn.VirtualMachine.State.PushValue(System.Object)">
+            Methods for working with the stack
+        </member>
+        <member name="M:Yarn.VirtualMachine.State.PopValue">
+            Pop a value from the stack
+        </member>
+        <member name="M:Yarn.VirtualMachine.State.PeekValue">
+            Peek at a value from the stack
+        </member>
+        <member name="M:Yarn.VirtualMachine.State.ClearStack">
+            Clear the stack
+        </member>
+        <member name="M:Yarn.VirtualMachine.ResetState">
+            Reset the state of the VM
+        </member>
+        <member name="F:Yarn.VirtualMachine.ExecutionState.Stopped">
+            Stopped 
+        </member>
+        <member name="F:Yarn.VirtualMachine.ExecutionState.WaitingOnOptionSelection">
+            Waiting on option selection 
+        </member>
+        <member name="F:Yarn.VirtualMachine.ExecutionState.Suspended">
+            Suspended in the middle of execution 
+        </member>
+        <member name="F:Yarn.VirtualMachine.ExecutionState.Running">
+            Running 
+        </member>
+        <member name="M:Yarn.VirtualMachine.Continue">
+            Resumes execution.
+        </member>
+        <member name="M:Yarn.VirtualMachine.FindInstructionPointForLabel(System.String)">
+            Looks up the instruction number for a named label in the current node.
+        </member>
+        <member name="T:Yarn.YarnSpinnerReflection">
+            <summary>Holder for reflection information generated from yarn_spinner.proto</summary>
+        </member>
+        <member name="P:Yarn.YarnSpinnerReflection.Descriptor">
+            <summary>File descriptor for yarn_spinner.proto</summary>
+        </member>
+    </members>
+</doc>
