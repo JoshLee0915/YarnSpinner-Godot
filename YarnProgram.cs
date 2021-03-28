@@ -10,6 +10,6 @@ namespace YarnSpinnerGodot
         public byte[] compiledProgram;
 
         private Program _program = null;
-        public Program program => _program ?? (_program = Program.Parser.ParseFrom(compiledProgram));
+        public Program Program => _program ?? (_program = Program.Parser.ParseFrom(compiledProgram));
     }
 }
