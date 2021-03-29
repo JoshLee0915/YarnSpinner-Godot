@@ -1,15 +1,19 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Godot;
 using Yarn;
+using YarnSpinnerGodot.Attributes;
 using YarnSpinnerGodot.Interfaces;
-using Node = Yarn.Node;
+using Node = Godot.Node;
 using Object = Godot.Object;
 
 namespace YarnSpinnerGodot
 {
-    public class DialogueRunner: Godot.Node, ILineLocalisationProvider
+    public class DialogueRunner: Node, ILineLocalisationProvider
     {
         [Signal]
         public delegate void OnNodeStart(string nodeName);
@@ -35,13 +39,16 @@ namespace YarnSpinnerGodot
         public NodePath variableStorageNode;
 
         [Export] 
-        public NodePath uiNode;
+        public NodePath dialogueManagerNode;
         
         [Export]
         public string startNode = Yarn.Dialogue.DEFAULT_START;
         
         [Export] 
         public bool startAutomatically = false;
+
+        [Export]
+        public bool scanForCommandsOnStart = false;
         
         public bool IsDialogueRunning { get; protected set; }
 
@@ -67,8 +74,26 @@ namespace YarnSpinnerGodot
         }
             
 
-        private IDialogueUI _dialogueUi;
-        public IDialogueUI DialogueUi => _dialogueUi ?? (_dialogueUi = GetNode<IDialogueUI>(uiNode));
+        private IDialogueManager _dialogueManager;
+        public IDialogueManager DialogueManager
+        {
+            get
+            {
+                if (_dialogue == null)
+                {
+                    Godot.Node node = GetNode(dialogueManagerNode);
+                    _dialogueManager = node as IDialogueManager;
+                    if (_dialogueManager == null)
+                        _dialogueManager = new GDDialogueManager(node);
+
+                    Connect(nameof(OnNodeStart), (Object)_dialogueManager, nameof(_dialogueManager.DialogueStarted));
+                    Connect(nameof(OnDialogueComplete), (Object) _dialogueManager,
+                        nameof(_dialogueManager.DialogueComplete));
+                }
+                
+                return _dialogueManager;
+            }
+        }
 
         private Dialogue _dialogue;
         public Dialogue Dialogue => _dialogue ?? (_dialogue = _CreateDialogue());
@@ -86,6 +111,9 @@ namespace YarnSpinnerGodot
                 Program combinedProgram = Program.Combine(compiledPrograms.ToArray());
                 Dialogue.SetProgram(combinedProgram);
             }
+            
+            if(scanForCommandsOnStart)
+                ScanTreeForCommands();
 
             if (startAutomatically)
                 Start();
@@ -94,6 +122,116 @@ namespace YarnSpinnerGodot
         public void Add(YarnProgram compiledYarnProgram)
         {
             Dialogue.AddProgram(compiledYarnProgram.Program);
+        }
+
+        public bool RegisterCommand(string commandName, CommandHandler command)
+        {
+            if (_commandHandlers.ContainsKey(commandName))
+                return false;
+            
+            _commandHandlers.Add(commandName, command);
+            return true;
+        }
+        
+        public bool RegisterCommand(string commandName, string objectName, CommandHandler command)
+        {
+            commandName = $"{objectName.Replace(" ", string.Empty)}::${commandName}";
+            if (_commandHandlers.ContainsKey(commandName))
+                return false;
+            
+            _commandHandlers.Add(commandName, command);
+            return true;
+        }
+
+        public bool RegisterCommand(string commandName, BlockingCommandHandler command)
+        {
+            if (_blockingCommandHandlers.ContainsKey(commandName))
+                return false;
+            
+            _blockingCommandHandlers.Add(commandName, command);
+            return true;
+        }
+        
+        public bool RegisterCommand(string commandName, string objectName, BlockingCommandHandler command)
+        {
+            commandName = $"{objectName.Replace(" ", string.Empty)}::${commandName}";
+            if (_blockingCommandHandlers.ContainsKey(commandName))
+                return false;
+            
+            _blockingCommandHandlers.Add(commandName, command);
+            return true;
+        }
+
+        public void RegisterCommands(Node node, string objectName = "")
+        {
+            string keyPrefix = string.IsNullOrEmpty(objectName) ? string.Empty : $"{objectName}::";
+            
+            // If the node implements IYarnCommandsProvider or has a similar interface prefer that
+            IYarnCommandsProvider provider = ((object)node) as IYarnCommandsProvider;
+            if (provider != null)
+            {
+                RegisterCommands(provider);
+                return;
+            }
+
+            try
+            {
+                provider = new GDYarnCommandProvider(node);
+                RegisterCommands(provider);
+                return;
+            }
+            catch (NotImplementedException e)
+            {}
+
+            // If the object does not implement IYarnCommandsProvider use reflection to looked for marked methods
+            foreach (MethodInfo method in node.GetType().GetMethods())
+            {
+                YarnCommandAttribute[] attributes = (YarnCommandAttribute[])method.GetCustomAttributes(typeof(YarnCommandAttribute), true);
+                foreach (YarnCommandAttribute yarnCommandAttribute in attributes)
+                {
+                    string key = $"{keyPrefix}{yarnCommandAttribute.CommandString}";
+                    if (_IsMethodCompatibleWithDelegate<BlockingCommandHandler>(method) &&
+                        !_blockingCommandHandlers.ContainsKey(key))
+                        _blockingCommandHandlers.Add(key,
+                            ((parameters, complete) => method.Invoke(node, new object[] {parameters, complete})));
+                    else if (_IsMethodCompatibleWithDelegate<CommandHandler>(method) &&
+                             !_commandHandlers.ContainsKey(key))
+                        _commandHandlers.Add(key, (parameters => method.Invoke(node, new object[] {parameters})));
+                }
+            }
+        }
+
+        public void RegisterCommands(IYarnCommandsProvider provider)
+        {
+            RegisterCommands(provider.YarnCommandHandlers);
+            RegisterCommands(provider.YarnBlockingCommandHandlers);
+        }
+
+        public void RegisterCommands(Dictionary<string, CommandHandler> commands)
+        {
+            foreach (KeyValuePair<string, CommandHandler> command in commands)
+                RegisterCommand(command.Key, command.Value);
+        }
+
+        public void RegisterCommands(Dictionary<string, BlockingCommandHandler> commands)
+        {
+            foreach (KeyValuePair<string, BlockingCommandHandler> command in commands)
+                RegisterCommand(command.Key, command.Value);
+        }
+
+        public bool RemoveCommand(string command) => _commandHandlers.Remove(command);
+        public bool RemoveBlockingCommand(string command) => _blockingCommandHandlers.Remove(command);
+
+        public void ScanTreeForCommands()
+        {
+            ScanTreeForCommands(GetTree().Root);
+        }
+
+        public void ScanTreeForCommands(Node node)
+        {
+            RegisterCommands(node);
+            foreach (Node child in node.GetChildren())
+                ScanTreeForCommands(child);
         }
 
         public void Start()
@@ -193,7 +331,7 @@ namespace YarnSpinnerGodot
                     return executionType;
             }
             
-            return DialogueUi.ExecuteCommand(command, ContinueDialogue);
+            return DialogueManager.ExecuteCommand(command, ContinueDialogue);
         }
 
         private (bool commandFound, Dialogue.HandlerExecutionType handlerExecutionType) _TryDispatchCommand(
@@ -220,9 +358,9 @@ namespace YarnSpinnerGodot
             {
                 LogDebugMessage = (message) => GD.Print(message),
                 LogErrorMessage = (message) => GD.PrintErr(message),
-                lineHandler = (line) => DialogueUi.DisplayLine(line, this, ContinueDialogue),
+                lineHandler = (line) => DialogueManager.DisplayLine(line, this, ContinueDialogue),
                 commandHandler = ExecuteCommand,
-                optionsHandler = (options) => DialogueUi.DisplayOptions(options, this, SelectOption),
+                optionsHandler = (options) => DialogueManager.DisplayOptions(options, this, SelectOption),
                 nodeStartHandler = (node) =>
                 {
                     EmitSignal(nameof(OnNodeStart), node);
@@ -240,7 +378,57 @@ namespace YarnSpinnerGodot
                 }
             };
 
+            // Yarn Spinner defines two built-in commands: "wait", and "stop". Stop is defined inside the Virtual
+            // Machine (the compiler traps it and makes it a special case.) Wait is defined here in Godot.
+            RegisterCommand("wait", (async (parameters, complete) =>
+            {
+                if (parameters?.Count() != 1) {
+                    GD.PrintErr("<<wait>> command expects one parameter.");
+                    complete();
+                    return;
+                }
+                
+                string[] args = parameters as string[] ?? parameters.ToArray();
+                string durationString = args[0];
+
+                if (float.TryParse(durationString,
+                    System.Globalization.NumberStyles.AllowDecimalPoint,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var duration) == false) {
+
+                    GD.PrintErr($"<<wait>> failed to parse duration {durationString}");
+                    complete();
+                }
+
+                if (duration > 0)
+                {
+                    Timer timer = new Timer();
+                    timer.OneShot = true;
+                    AddChild(timer);
+                    timer.Start(duration);
+                    await ToSignal(timer, "timeout");
+                    RemoveChild(timer);
+                }
+                
+                complete();
+            }));
+
             return dialogue;
+        }
+        
+        private bool _IsMethodCompatibleWithDelegate<T>(MethodInfo method) where T : class
+        {
+            Type delegateType = typeof(T);
+            MethodInfo delegateSignature = delegateType.GetMethod("Invoke");
+
+            bool parametersEqual = delegateSignature
+                .GetParameters()
+                .Select(x => x.ParameterType)
+                .SequenceEqual(method.GetParameters()
+                    .Select(x => x.ParameterType));
+
+            return delegateSignature.ReturnType == method.ReturnType &&
+                   parametersEqual;
         }
     }
 }

@@ -3,7 +3,7 @@ using Yarn;
 
 namespace YarnSpinnerGodot.Interfaces
 {
-    public interface IDialogueUI
+    public interface IDialogueManager
     {
         void DialogueStarted();
         void DialogueComplete();

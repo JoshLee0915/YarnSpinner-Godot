@@ -6,14 +6,15 @@ using Object = Godot.Object;
 
 namespace YarnSpinnerGodot
 {
-    public class GDVariableStorage: IVariableStorage
+    public class GDVariableStorage: GDObjectWrapper, IVariableStorage
     {
-        private Object _gdObject;
+        protected override string[] Interface => new[]
+            {nameof(SetValue), nameof(GetValue), nameof(Clear), nameof(ResetToDefaults)};
         
         public void SetValue(string variableName, Value value)
         {
             Array args;
-            _gdObject.Call(nameof(SetValue), variableName, value);
+            gdObject.Call(nameof(SetValue), variableName, value);
         }
 
         public void SetValue(string variableName, string stringValue)
@@ -33,26 +34,20 @@ namespace YarnSpinnerGodot
 
         public Value GetValue(string variableName)
         {
-            return _gdObject.Call(nameof(GetValue), variableName) as Value;
+            return (Value)gdObject.Call(nameof(GetValue), variableName);
         }
-
-        public GDVariableStorage (Object gdObject)
-        {
-            if (!gdObject.HasMethod(nameof(SetValue)) || !gdObject.HasMethod(nameof(GetValue)) ||
-                !gdObject.HasMethod(nameof(Clear)) || !gdObject.HasMethod(nameof(ResetToDefaults)))
-                throw new NotImplementedException("The passed gdObject does not implement the expected interface");
-            
-            _gdObject = gdObject;
-        }
+        
+        public GDVariableStorage(Object gdObject) : base(gdObject)
+        {}
 
         public void Clear()
         {
-            _gdObject.Call(nameof(Clear));
+            gdObject.Call(nameof(Clear));
         }
 
         public void ResetToDefaults()
         {
-            _gdObject.Call(nameof(ResetToDefaults));
+            gdObject.Call(nameof(ResetToDefaults));
         }
     }
 }
