@@ -3,7 +3,7 @@ using Yarn;
 using YarnSpinnerGodot.Interfaces;
 using Object = Godot.Object;
 
-namespace YarnSpinnerGodot
+namespace YarnSpinnerGodot.GDScript
 {
     public class GDDialogueManager: GDObjectWrapper, IDialogueManager
     {

@@ -4,7 +4,7 @@ using YarnSpinnerGodot.Interfaces;
 using Array = System.Array;
 using Object = Godot.Object;
 
-namespace YarnSpinnerGodot
+namespace YarnSpinnerGodot.GDScript
 {
     public class GDVariableStorage: GDObjectWrapper, IVariableStorage
     {

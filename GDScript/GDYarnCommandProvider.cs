@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using YarnSpinnerGodot.Interfaces;
 
-namespace YarnSpinnerGodot
+namespace YarnSpinnerGodot.GDScript
 {
     public class GDYarnCommandProvider: GDObjectWrapper, IYarnCommandsProvider
     {

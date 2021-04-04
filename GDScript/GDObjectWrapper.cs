@@ -1,7 +1,7 @@
 using System;
 using Object = Godot.Object;
 
-namespace YarnSpinnerGodot
+namespace YarnSpinnerGodot.GDScript
 {
     public abstract class GDObjectWrapper
     {
