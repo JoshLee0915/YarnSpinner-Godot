@@ -10,7 +10,7 @@ namespace YarnSpinnerGodot
     public class DialogueEventDispatcher: Node, IDialogueManager
     {
         [Signal]
-        public delegate void OnDialogueStarted();
+        public delegate void OnDialogueStarted(string nodeName);
 
         [Signal]
         public delegate void OnDialogueComplete();
@@ -24,9 +24,9 @@ namespace YarnSpinnerGodot
         private Action<int> _selectionCallback = null;
         private Action _continueCallback = null;
         
-        public void DialogueStarted()
+        public void DialogueStarted(string name)
         {
-            EmitSignal(nameof(OnDialogueStarted));
+            EmitSignal(nameof(OnDialogueStarted), name);
         }
 
         public void DialogueComplete()
@@ -36,6 +36,7 @@ namespace YarnSpinnerGodot
 
         public void DisplayOptions(OptionSet options, ILineLocalisationProvider localisationProvider, Action<int> onSelected)
         {
+            _continueCallback = null;
             Dictionary<int, string> optionsDictionary = new Dictionary<int, string>();
             foreach (OptionSet.Option option in options.Options)
                 optionsDictionary.Add(option.ID, localisationProvider.GetLocalisedTextForLine(option.Line));
@@ -50,7 +51,7 @@ namespace YarnSpinnerGodot
             string lineText = localisationProvider.GetLocalisedTextForLine(line);
             EmitSignal(nameof(OnDisplayLine), lineText);
 
-            return Dialogue.HandlerExecutionType.ContinueExecution;
+            return Dialogue.HandlerExecutionType.PauseExecution;
         }
 
         public virtual Dialogue.HandlerExecutionType ExecuteCommand(Command command, Action onComplete)
@@ -64,7 +65,6 @@ namespace YarnSpinnerGodot
                 return false;
 
             _continueCallback();
-            _continueCallback = null;
             return true;
         }
 
@@ -74,7 +74,6 @@ namespace YarnSpinnerGodot
                 return false;
 
             _selectionCallback(optionId);
-            _selectionCallback = null;
             return true;
         }
     }

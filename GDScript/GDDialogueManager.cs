@@ -16,9 +16,9 @@ namespace YarnSpinnerGodot.GDScript
         public GDDialogueManager(Object gdObject): base(gdObject)
         {}
         
-        public void DialogueStarted()
+        public void DialogueStarted(string nodeName)
         {
-            gdObject.Call(nameof(DialogueStarted));
+            gdObject.Call(nameof(DialogueStarted), nodeName);
         }
 
         public void DialogueComplete()

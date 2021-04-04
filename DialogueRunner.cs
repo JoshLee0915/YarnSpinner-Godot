@@ -77,7 +77,7 @@ namespace YarnSpinnerGodot
 		{
 			get
 			{
-				if (_dialogue == null)
+				if (_dialogueManager == null)
 				{
 					Godot.Node node = GetNode(dialogueManagerNode);
 					_dialogueManager = node as IDialogueManager;
