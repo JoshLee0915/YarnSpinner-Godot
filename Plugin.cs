@@ -25,8 +25,11 @@ namespace YarnSpinnerGodot
 			Script generalVarStoreScript = GD.Load<Script>("res://addons/YarnSpinner-Godot/GeneralVariableStorage.cs");
 			AddCustomType("GeneralYarnVariableStorage", "Node", generalVarStoreScript, spinnerIcon);
 			
-			Script DialogueEventDispatcherScript = GD.Load<Script>("res://addons/YarnSpinner-Godot/DialogueEventDispatcher.cs");
-			AddCustomType("DialogueEventDispatcher", "Node", DialogueEventDispatcherScript, spinnerIcon);
+			Script dialogueEventDispatcherScript = GD.Load<Script>("res://addons/YarnSpinner-Godot/DialogueEventDispatcher.cs");
+			AddCustomType("DialogueEventDispatcher", "Node", dialogueEventDispatcherScript, spinnerIcon);
+
+			Script choiceButtonScript = GD.Load<Script>("res://addons/YarnSpinner-Godot/GDScript/Nodes/ChoiceButton.gd");
+			AddCustomType("ChoiceButton", "Button", choiceButtonScript, spinnerIcon);
 		}
 
 		public override void _ExitTree()
@@ -38,6 +41,7 @@ namespace YarnSpinnerGodot
 			RemoveCustomType("YarnDialogueRunner");
 			RemoveCustomType("GeneralYarnVariableStorage");
 			RemoveCustomType("DialogueEventDispatcher");
+			RemoveCustomType("ChoiceButton");
 		}
 	}
 }
