@@ -69,13 +69,13 @@ namespace YarnSpinnerGodot
                     program.WriteTo(outputStream);
                     outputStream.Flush();
 
-                    yarnResource = new YarnProgram
-                    {
-                        compiledProgram = memoryStream.ToArray()
-                    };
+                    // required to get around some odd issues with saving resources in Mono
+                    // See https://github.com/godotengine/godot/issues/32856
+                    yarnResource = GD.Load<CSharpScript>("res://addons/YarnSpinner-Godot/YarnProgram.cs").New() as YarnProgram;
+                    yarnResource.compiledProgram = memoryStream.ToArray();
                 }
             }
-            
+
             Error saveError = ResourceSaver.Save($"{savePath}.{GetSaveExtension()}", yarnResource);
             
             if(saveError != Error.Ok)
