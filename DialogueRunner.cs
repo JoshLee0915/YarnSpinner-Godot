@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Godot;
 using Yarn;
 using YarnSpinnerGodot.Attributes;
+using YarnSpinnerGodot.GDScript;
 using YarnSpinnerGodot.Interfaces;
 using Node = Godot.Node;
 using Object = Godot.Object;
@@ -382,7 +381,8 @@ namespace YarnSpinnerGodot
             // Machine (the compiler traps it and makes it a special case.) Wait is defined here in Godot.
             RegisterCommand("wait", (async (parameters, complete) =>
             {
-                if (parameters?.Count() != 1) {
+                if (parameters?.Count() != 1) 
+                {
                     GD.PrintErr("<<wait>> command expects one parameter.");
                     complete();
                     return;
@@ -394,7 +394,8 @@ namespace YarnSpinnerGodot
                 if (float.TryParse(durationString,
                     System.Globalization.NumberStyles.AllowDecimalPoint,
                     System.Globalization.CultureInfo.InvariantCulture,
-                    out var duration) == false) {
+                    out var duration) == false) 
+                {
 
                     GD.PrintErr($"<<wait>> failed to parse duration {durationString}");
                     complete();
